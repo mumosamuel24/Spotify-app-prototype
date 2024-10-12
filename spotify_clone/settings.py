@@ -82,16 +82,28 @@ WSGI_APPLICATION = 'spotify_clone.wsgi.application'
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'YOUR-NAME',
+#         'USER': 'YOUR-USER',
+#         'PASSWORD': 'PASSWORD',
+#         'HOST': 'YOUR-HOST',
+#         'PORT': 5432
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'YOUR-NAME',
-        'USER': 'YOUR-USER',
-        'PASSWORD': 'PASSWORD',
-        'HOST': 'YOUR-HOST',
-        'PORT': 5432
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'spotify_music',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',  # or the IP address of your MySQL server
+        'PORT': '3306',  # Default port for MySQL
     }
 }
+
 
 
 # Password validation

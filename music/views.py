@@ -177,40 +177,79 @@ def index(request):
     }
     return render(request, 'index.html', context)
 
+# def search(request):
+#     if request.method == 'POST':
+#         search_query = request.POST['search_query']
+
+#         url = "https://spotify-scraper.p.rapidapi.com/v1/search"
+
+#         querystring = {"term":search_query,"type":"track"}
+
+#         headers = {
+#             "X-RapidAPI-Key": "02912db996msh068b089c778126bp13a9d9jsn380afeb7d573",
+#             "X-RapidAPI-Host": "spotify-scraper.p.rapidapi.com"
+#         }
+
+#         response = requests.get(url, headers=headers, params=querystring)
+
+#         track_list = []
+
+#         if response.status_code == 200:
+#             data = response.json()
+
+#             search_results_count = data["tracks"]["totalCount"]
+#             tracks = data["tracks"]["items"]
+
+#             for track in tracks:
+#                 track_name = track["name"]
+#                 artist_name = track["artists"][0]["name"]
+#                 duration = track["durationText"]
+#                 trackid = track["id"]
+
+#                 if get_track_image(trackid, track_name):
+#                     track_image = get_track_image(trackid, track_name)
+#                 else:
+#                     track_image = "https://imgv3.fotor.com/images/blog-richtext-image/music-of-the-spheres-album-cover.jpg"
+
+#                 track_list.append({
+#                     'track_name': track_name,
+#                     'artist_name': artist_name,
+#                     'duration': duration,
+#                     'trackid': trackid,
+#                     'track_image': track_image,
+#                 })
+#         context = {
+#             'search_results_count': search_results_count,
+#             'track_list': track_list,
+#         }
+
+#         return render(request, 'search.html', context)
+#     else:
+#         return render(request, 'search.html')
 def search(request):
+    search_results_count = 0  # Initialize the variable
+    track_list = []  # Initialize track_list to ensure it's always defined
+
     if request.method == 'POST':
-        search_query = request.POST['search_query']
-
+        search_query = request.POST.get('search_query', '')
         url = "https://spotify-scraper.p.rapidapi.com/v1/search"
-
-        querystring = {"term":search_query,"type":"track"}
-
+        querystring = {"term": search_query, "type": "track"}
         headers = {
             "X-RapidAPI-Key": "02912db996msh068b089c778126bp13a9d9jsn380afeb7d573",
             "X-RapidAPI-Host": "spotify-scraper.p.rapidapi.com"
         }
-
         response = requests.get(url, headers=headers, params=querystring)
-
-        track_list = []
-
+        
         if response.status_code == 200:
             data = response.json()
-
             search_results_count = data["tracks"]["totalCount"]
             tracks = data["tracks"]["items"]
-
             for track in tracks:
                 track_name = track["name"]
                 artist_name = track["artists"][0]["name"]
                 duration = track["durationText"]
                 trackid = track["id"]
-
-                if get_track_image(trackid, track_name):
-                    track_image = get_track_image(trackid, track_name)
-                else:
-                    track_image = "https://imgv3.fotor.com/images/blog-richtext-image/music-of-the-spheres-album-cover.jpg"
-
+                track_image = get_track_image(trackid, track_name) or "https://imgv3.fotor.com/images/blog-richtext-image/music-of-the-spheres-album-cover.jpg"
                 track_list.append({
                     'track_name': track_name,
                     'artist_name': artist_name,
@@ -218,14 +257,13 @@ def search(request):
                     'trackid': trackid,
                     'track_image': track_image,
                 })
-        context = {
-            'search_results_count': search_results_count,
-            'track_list': track_list,
-        }
 
-        return render(request, 'search.html', context)
-    else:
-        return render(request, 'search.html')
+    context = {
+        'search_results_count': search_results_count,
+        'track_list': track_list,
+    }
+    return render(request, 'search.html', context)
+
 
 def profile(request, pk):
     artist_id = pk
